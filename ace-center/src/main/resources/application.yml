@@ -1,0 +1,13 @@
+spring:
+    application:
+        name: ace-center
+
+server:
+    port: 8761 #启动端口
+
+eureka:
+    #instance:
+      #prefer-ip-address: true 以ip形式定义主机地址
+    client:
+        registerWithEureka: false  #false:不作为一个客户端注册到注册中心
+        fetchRegistry: false      #(检索服务)注册中心的职责就是维护服务实例，它并不需要去检索服务， 所以也设置为 false

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="tongji.dao.oracle.PersonInfoDao">
+  <resultMap id="personInfoResultMap" type="tongji.domain.oracle.PersonInfo">
+  <result column="XGH" property="personNo" jdbcType="VARCHAR" />
+  <result column="XM" property="personName" jdbcType="VARCHAR" />
+  <result column="XB" property="gender" jdbcType="VARCHAR" />
+  <result column="END_DATE" property="endDate" jdbcType="VARCHAR" />
+  <result column="EXP_DATE" property="invalidDate" jdbcType="VARCHAR" />
+  <result column="DAYS" property="remainingDay" jdbcType="DOUBLE" />
+  <result column="DATA_TYPE" property="dataType" jdbcType="VARCHAR" />
+  <result column="FLAG" property="status" jdbcType="VARCHAR" />
+  <result column="SRC_SJ" property="srcPhone" jdbcType="VARCHAR" />
+  <result column="SRC_DZXX" property="srcEmail" jdbcType="VARCHAR" />
+  <result column="SJ" property="phone" jdbcType="VARCHAR" />
+  <result column="DZXX" property="email" jdbcType="VARCHAR" />
+  </resultMap>
+  	<!-- 根据学号查询人信息 -->
+    <select id="getPersonInfo" parameterType="string" resultMap="personInfoResultMap">   
+		SELECT XGH,XM,END_DATE,EXP_DATE,DAYS,DATA_TYPE,FLAG FROM
+		(SELECT A.*, ROWNUM R FROM
+		(SELECT *  FROM EX_T_ALL_JBXX_VIEW WHERE 1=1 
+		<if test="personNo != null  ">
+		    AND  xgh = #{personNo}
+		</if>
+		<if test="personName != null  ">
+		    AND  xm LIKE '%'||#{personName}||'%'  
+		</if>
+		) A WHERE <![CDATA[ROWNUM <= #{str2} ]]>) B WHERE <![CDATA[R >= #{str1} ]]>
+
+    </select>
+    
+     <select id="getInvalidPerson" parameterType="string" resultMap="personInfoResultMap">   
+		SELECT XGH,XM,XB,END_DATE,EXP_DATE,DAYS,DATA_TYPE,SRC_SJ,SRC_DZXX,SJ,DZXX,FLAG FROM
+		EX_T_ALL_JBXX_VIEW where EXP_DATE =  #{invalidDate}	
+    </select>
+    
+    
+     <select id="getPersonByXgh" parameterType="string" resultMap="personInfoResultMap">   
+		SELECT XGH,XM,XB,END_DATE,EXP_DATE,DAYS,DATA_TYPE,SRC_SJ,SRC_DZXX,SJ,DZXX,FLAG FROM
+		EX_T_ALL_JBXX_VIEW WHERE XGH in 
+		 <foreach collection ="array" index ="index" item="xgh" open="(" separator="," close=")">
+        	#{xgh}
+        </foreach>
+     </select>
+    
+    
+</mapper>

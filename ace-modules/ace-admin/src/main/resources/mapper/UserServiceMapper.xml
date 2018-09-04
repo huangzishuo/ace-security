@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+	namespace="com.github.wxiaoqi.security.admin.mapper.UserServiceMapper">
+	<resultMap id="BaseResultMap"
+		type="com.github.wxiaoqi.security.admin.entity.UserService">
+		<result column="user_id" jdbcType="INTEGER" property="userId" />
+		<result column="service_id" jdbcType="INTEGER"
+			property="serviceId" />
+	</resultMap>
+
+	<select id="getService" resultType="List">
+		select c.code from base_user
+		a right join user_service b on a.id = b.user_id inner join auth_client
+		c on b.service_id = c.id where a.id = #{id}
+	</select>
+
+	<insert id="addService">
+		insert into user_service
+		values(#{userId},#{serviceId})
+	</insert>
+
+</mapper>

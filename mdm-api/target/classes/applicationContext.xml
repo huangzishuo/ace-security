@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+	xmlns:jee="http://www.springframework.org/schema/jee" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:task="http://www.springframework.org/schema/task"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context.xsd
+	http://www.springframework.org/schema/mvc
+	http://www.springframework.org/schema/mvc/spring-mvc.xsd
+	http://www.springframework.org/schema/tx
+	http://www.springframework.org/schema/tx/spring-tx.xsd
+	http://www.springframework.org/schema/util 
+	http://www.springframework.org/schema/util/spring-util-4.0.xsd
+	http://www.springframework.org/schema/aop
+	http://www.springframework.org/schema/aop/spring-aop.xsd
+	http://www.springframework.org/schema/task
+	http://www.springframework.org/schema/task/spring-task-3.1.xsd">
+	
+	<!-- 加载配置属性文件 -->
+	<context:property-placeholder ignore-unresolvable="true" location="classpath:config.properties" />
+		
+	<!-- 加载应用属性实例，在JAVA类中可以 @Value("#{APP_PROP['jdbc.driver']}") 来获取属性文件中jdbc.driver的值 -->
+	<util:properties id="APP_PROP" location="classpath:config.properties" local-override="true" />
+	
+	<!-- 加载定时任务 -->
+	<task:annotation-driven/>
+	<context:annotation-config />
+		
+    <bean name="dataSource" class="com.alibaba.druid.pool.DruidDataSource" destroy-method="close">
+    	<property name="driverClassName" value="${jdbc.oracle.driver}" />
+        <property name="url" value="${jdbc.oracle.url}" />
+		<property name="username" value="${jdbc.oracle.username}" />
+		<property name="password" value="${jdbc.oracle.password}" />
+	</bean>
+	
+	<!-- 处理请求时返回json字符串的中文乱码问题 -->
+    <mvc:annotation-driven>
+        <mvc:message-converters>
+            <bean class="org.springframework.http.converter.StringHttpMessageConverter">
+                <property name="supportedMediaTypes">
+                    <list>
+                        <value>application/json;charset=UTF-8</value>
+                    </list>
+                </property>
+                
+             
+
+            </bean>
+        </mvc:message-converters>
+    </mvc:annotation-driven>
+	<bean id="jacksonObjectMapper" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+        <property name="targetObject">
+            <bean class="com.fasterxml.jackson.databind.ObjectMapper">
+                <!-- 处理responseBody 里面日期类型,可能线程不安全，后期研究 -->
+                <!-- <property name="dateFormat">
+                    <bean class="java.text.SimpleDateFormat">
+                        <constructor-arg type="java.lang.String" value="yyyy-MM-dd HH:mm:ss" />
+                    </bean>
+                </property> -->
+                <!-- 为null字段时不显示 -->
+                <property name="serializationInclusion">
+                    <value type="com.fasterxml.jackson.annotation.JsonInclude.Include">NON_NULL</value>
+                </property>
+            </bean>
+        </property>
+        <property name="targetMethod" value="configure" />
+        <property name="arguments">
+            <list>
+                <value type="com.fasterxml.jackson.databind.DeserializationFeature">FAIL_ON_UNKNOWN_PROPERTIES</value>
+                <value>false</value>
+            </list>
+        </property>
+    </bean>
+	<!-- 开启注解配置 即Autowried -->  
+    <!-- <context:annotation-config/> -->  
+    <!--其实component-scan 就有了annotation-config的功能即把需要的类注册到了spring容器中 -->
+	<!-- <context:component-scan base-package="tongji.service.*" /> -->
+	
+	<!-- Controller注解由springMVC扫描 -->
+	<!-- Use-default-filter此时为true那么会对base-package包或者子包下的所有的进行java类进行扫描,并把匹配的java类注册成bean -->
+	<context:component-scan use-default-filters="true" base-package="tongji.*"/><!-- base-package 如果多个，用“,”分隔 -->
+	
+	<!-- myBatis文件 -->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="typeAliasesPackage" value="tongji.domain.oracle"/>
+		<!-- mybatis配置文件路径 -->
+		<property name="configLocation" value="classpath:/mybatis-config.xml"></property>
+		<!-- 实体类映射文件路径，多个可以使用mybatis/*.xml来替代 -->
+		<property name="mapperLocations" value="classpath*:tongji/mapper/oracle/*.xml" />
+	</bean>
+	
+	<!--动态代理实现 不用写dao的实现 -->
+	<bean id="mapperScannerConfigurer" class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<!-- 这里的basePackage 指定了dao层接口路劲，这里的dao接口不用自己实现 -->
+		<property name="basePackage" value="tongji.dao.oracle" />
+		<!-- 如果只有一个数据源的话可以不用指定，但是如果有多个数据源的话必须要指定 -->
+		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory" />
+	</bean>
+	
+	<!-- 配置事务管理器 -->
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	
+	<!-- 使用annotation定义事务 -->
+    <tx:annotation-driven transaction-manager="transactionManager" /> 
+	
+	<!-- 拦截器方式配置事物 -->
+	<tx:advice id="transactionAdvice" transaction-manager="transactionManager">
+		<tx:attributes>
+			<tx:method name="add*" propagation="REQUIRED" />
+			<tx:method name="insert*" propagation="REQUIRED" />
+			<tx:method name="save*" propagation="REQUIRED" />
+			<tx:method name="update*" propagation="REQUIRED" />
+			<tx:method name="modify*" propagation="REQUIRED" />
+			<tx:method name="edit*" propagation="REQUIRED" />
+			<tx:method name="del*" propagation="REQUIRED" />
+			<tx:method name="remove*" propagation="REQUIRED" />
+			<tx:method name="repair" propagation="REQUIRED" />
+			<tx:method name="get*" propagation="SUPPORTS" />
+			<tx:method name="find*" propagation="SUPPORTS" />
+			<tx:method name="search*" propagation="SUPPORTS" />
+		</tx:attributes>
+	</tx:advice>
+	
+	
+	
+	<!-- sqlserver数据源 -->
+	
+	
+	
+	<!-- sqlserver数据源 -->
+	<bean name="dataSource_2" class="com.alibaba.druid.pool.DruidDataSource" destroy-method="close">
+    	<property name="driverClassName" value="${jdbc.sqlserver.driver}" />
+        <property name="url" value="${jdbc.sqlserver.url}" />
+		<property name="username" value="${jdbc.sqlserver.username}" />
+		<property name="password" value="${jdbc.sqlserver.password}" />
+	</bean>
+	
+	<!-- myBatis文件 -->
+	<bean id="sqlSessionFactory2" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource_2" />
+		<property name="typeAliasesPackage" value="tongji.domain.sqlserver"/>
+		<!-- mybatis配置文件路径 -->
+		<property name="configLocation" value="classpath:/mybatis-config.xml"></property>
+		<!-- 实体类映射文件路径，多个可以使用mybatis/*.xml来替代 -->
+		<property name="mapperLocations" value="classpath*:tongji/mapper/sqlserver/*.xml" />
+	</bean>
+	
+	<!--动态代理实现 不用写dao的实现 -->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<!-- 这里的basePackage 指定了dao层接口路劲，这里的dao接口不用自己实现 -->
+		<property name="basePackage" value="tongji.dao.sqlserver" />
+		<!-- 如果只有一个数据源的话可以不用指定，但是如果有多个数据源的话必须要指定 -->
+		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory2" />
+	</bean>
+	
+	<!-- 配置事务管理器 -->
+	<bean id="transactionManager2" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource_2" />
+	</bean>
+	
+	<!-- 使用annotation定义事务 -->
+    <tx:annotation-driven transaction-manager="transactionManager2" /> 
+    
+    <!-- 拦截器方式配置事物 -->
+	<tx:advice id="transactionAdvice2" transaction-manager="transactionManager2">
+		<tx:attributes>
+			<tx:method name="add*" propagation="REQUIRED" />
+			<tx:method name="insert*" propagation="REQUIRED" />
+			<tx:method name="save*" propagation="REQUIRED" />
+			<tx:method name="update*" propagation="REQUIRED" />
+			<tx:method name="modify*" propagation="REQUIRED" />
+			<tx:method name="edit*" propagation="REQUIRED" />
+			<tx:method name="del*" propagation="REQUIRED" />
+			<tx:method name="remove*" propagation="REQUIRED" />
+			<tx:method name="repair" propagation="REQUIRED" />
+			<tx:method name="get*" propagation="SUPPORTS" />
+			<tx:method name="find*" propagation="SUPPORTS" />
+			<tx:method name="search*" propagation="SUPPORTS" />
+		</tx:attributes>
+	</tx:advice>
+	
+	<!-- 配置druid监控spring jdbc -->
+	<bean id="druid-stat-interceptor" class="com.alibaba.druid.support.spring.stat.DruidStatInterceptor">
+	</bean>
+	<bean id="druid-stat-pointcut" class="org.springframework.aop.support.JdkRegexpMethodPointcut" scope="prototype">
+		<property name="patterns">
+			<list>
+				<value>tongji.service.*.*</value>
+			</list>
+		</property>
+	</bean>
+    
+	<aop:config>
+		<aop:advisor advice-ref="druid-stat-interceptor" pointcut-ref="druid-stat-pointcut" />
+	</aop:config>
+	
+</beans>

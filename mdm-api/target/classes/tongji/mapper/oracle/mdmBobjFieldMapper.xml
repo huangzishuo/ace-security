@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="tongji.dao.oracle.MdmBobjFieldDao">
+	<resultMap id="BaseResultMap"
+		type="tongji.domain.oracle.MdmBobjField">
+		<result column="ID" property="id" jdbcType="VARCHAR" />
+		<result column="TABLEID" property="tableId" jdbcType="VARCHAR" />
+		<result column="BOBJTYPE" property="bobjType"
+			jdbcType="VARCHAR" />
+		<result column="FIELD" property="field" jdbcType="VARCHAR" />
+		<result column="FIELDCN" property="fieldCn" jdbcType="VARCHAR" />
+
+
+	</resultMap>
+	<!-- 查询单条记录 -->
+	<select id="getMdmBobjField" parameterType="string"
+		resultMap="BaseResultMap">
+		select t1.id id ,t1.table_id tableId ,t1.bobj_type bobjType ,t1.field field
+		,t1.field_cn fieldCn from mdm_bobj_field t1 left join mdm_route_field
+		t2
+		on t1.table_id = t2.table_id and t1.field = t2.field and t2.client_id =
+		#{str1}
+		where t2.id is not null
+
+	</select>
+</mapper>

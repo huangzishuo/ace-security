@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="tongji.dao.classcourse.CourseDao">
+  <resultMap id="BaseResultMap" type="tongji.domain.classcourse.Course">
+<result column="DIM0" property="dim0" jdbcType="VARCHAR" />
+ <result column="DIM1" property="dim1" jdbcType="VARCHAR" />
+ <result column="DIM2" property="dim2" jdbcType="VARCHAR" />
+<result column="DIM3" property="dim3" jdbcType="VARCHAR" />
+  <result column="DIM4" property="dim4" jdbcType="VARCHAR" />
+  <result column="DIM5" property="dim5" jdbcType="VARCHAR" />
+  <result column="DIM6" property="dim6" jdbcType="VARCHAR" />
+  <result column="DIM7" property="dim7" jdbcType="VARCHAR" />
+
+  </resultMap>
+  <!-- 查询单条记录 -->
+    <select id="getAll" parameterType="string" resultMap="BaseResultMap">
+     with temp as (select '1' as value,'1' as keys,1 as id 
+             union all select '2' as value,'2' as keys,2 as id 
+             union all select '3' as value,'3' as keys,3 as id 
+              union all select '4' as value,'4' as keys,4 as id 
+              union all select '5' as value,'5' as keys,5 as id 
+             union all select '6' as value,'6' as keys,6 as id 
+             union all select '7' as value,'7' as keys,7 as id 
+             union all select '8' as value,'8' as keys,8 as id 
+              union all select '9' as value,'9' as keys,9 as id 
+              union all select '10' as value,'10' as keys,10 as id 
+             union all select '11' as value,'11' as keys,11 as id 
+              union all select '12' as value,'12' as keys,12 as id )
+            ,courseinfo_temp as (
+            select * from VIEW_BASELINE where roomname =  #{str1}  and zlx !=  #{str2} and  cast( #{str3} as int) between ksz and jsz )
+              select  value dim0,isnull(t2.kcmc + '  ' +t2.jsmc,t2.kcmc) dim1,
+            isnull(t3.kcmc + '  ' +t3.jsmc,t3.kcmc) dim2,
+            isnull(t4.kcmc + '  ' +t4.jsmc,t4.kcmc) dim3,
+            isnull(t5.kcmc + '  ' +t5.jsmc,t5.kcmc) dim4,
+            isnull(t6.kcmc + '  ' +t6.jsmc,t6.kcmc) dim5 ,
+            isnull(t7.kcmc + '  ' +t7.jsmc,t7.kcmc) dim6 ,
+            isnull(t8.kcmc + '  ' +t8.jsmc,t8.kcmc) dim7
+            from temp t1 left join courseinfo_temp t2 on t1.keys = t2.js
+            and t2.zs = '1' 
+           left join courseinfo_temp t3 on t1.keys = t3.js
+           and t3.zs = '2' 
+           left join courseinfo_temp t4 on t1.keys = t4.js
+            and t4.zs = '3' 
+           left join courseinfo_temp t5 on t1.keys = t5.js
+            and t5.zs = '4' 
+           left join courseinfo_temp t6 on t1.keys = t6.js
+            and t6.zs = '5' 
+           left join courseinfo_temp t7 on t1.keys = t7.js
+            and t7.zs = '6' 
+           left join courseinfo_temp t8 on t1.keys = t8.js
+           and t8.zs = '7' 
+           order by t1.id
+    </select>
+</mapper>
