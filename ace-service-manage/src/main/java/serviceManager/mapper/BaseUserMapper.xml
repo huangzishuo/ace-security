@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="serviceManager.dao.BaseUserMapper" >
+  <resultMap id="BaseResultMap" type="serviceManager.vo.BaseUser" >
+    <constructor >
+      <arg column="ID" jdbcType="DECIMAL" javaType="java.lang.Long" />
+      <arg column="USERNAME" jdbcType="OTHER" javaType="java.lang.Object" />
+      <arg column="PASSWORD" jdbcType="OTHER" javaType="java.lang.Object" />
+      <arg column="NAME" jdbcType="OTHER" javaType="java.lang.Object" />
+      <arg column="BIRTHDAY" jdbcType="OTHER" javaType="java.lang.Object" />
+      <arg column="ADDRESS" jdbcType="OTHER" javaType="java.lang.Object" />
+      <arg column="MOBILE_PHONE" jdbcType="OTHER" javaType="java.lang.Object" />
+      <arg column="TEL_PHONE" jdbcType="OTHER" javaType="java.lang.Object" />
+      <arg column="EMAIL" jdbcType="OTHER" javaType="java.lang.Object" />
+      <arg column="SEX" jdbcType="OTHER" javaType="java.lang.Object" />
+      <arg column="TYPE" jdbcType="OTHER" javaType="java.lang.Object" />
+      <arg column="STATUS" jdbcType="OTHER" javaType="java.lang.Object" />
+      <arg column="DESCRIPTION" jdbcType="OTHER" javaType="java.lang.Object" />
+      <arg column="CRT_TIME" jdbcType="DATE" javaType="java.util.Date" />
+      <arg column="CRT_USER" jdbcType="OTHER" javaType="java.lang.Object" />
+      <arg column="CRT_NAME" jdbcType="OTHER" javaType="java.lang.Object" />
+      <arg column="CRT_HOST" jdbcType="OTHER" javaType="java.lang.Object" />
+      <arg column="UPD_TIME" jdbcType="DATE" javaType="java.util.Date" />
+      <arg column="UPD_USER" jdbcType="OTHER" javaType="java.lang.Object" />
+      <arg column="UPD_NAME" jdbcType="OTHER" javaType="java.lang.Object" />
+      <arg column="UPD_HOST" jdbcType="OTHER" javaType="java.lang.Object" />
+      <arg column="ATTR1" jdbcType="OTHER" javaType="java.lang.Object" />
+      <arg column="ATTR2" jdbcType="OTHER" javaType="java.lang.Object" />
+      <arg column="ATTR3" jdbcType="OTHER" javaType="java.lang.Object" />
+      <arg column="ATTR4" jdbcType="OTHER" javaType="java.lang.Object" />
+      <arg column="ATTR5" jdbcType="OTHER" javaType="java.lang.Object" />
+      <arg column="ATTR6" jdbcType="OTHER" javaType="java.lang.Object" />
+      <arg column="ATTR7" jdbcType="OTHER" javaType="java.lang.Object" />
+      <arg column="ATTR8" jdbcType="OTHER" javaType="java.lang.Object" />
+    </constructor>
+  </resultMap>
+  <insert id="insert" parameterType="serviceManager.vo.BaseUser" >
+    <selectKey resultType="java.lang.Long" keyProperty="id" order="BEFORE" >
+      oracle
+    </selectKey>
+    insert into BASE_USER (ID, USERNAME, PASSWORD, 
+      NAME, BIRTHDAY, ADDRESS, 
+      MOBILE_PHONE, TEL_PHONE, EMAIL, 
+      SEX, TYPE, STATUS, DESCRIPTION, 
+      CRT_TIME, CRT_USER, CRT_NAME, 
+      CRT_HOST, UPD_TIME, UPD_USER, 
+      UPD_NAME, UPD_HOST, ATTR1, 
+      ATTR2, ATTR3, ATTR4, ATTR5, 
+      ATTR6, ATTR7, ATTR8)
+    values (#{id,jdbcType=DECIMAL}, #{username,jdbcType=OTHER}, #{password,jdbcType=OTHER}, 
+      #{name,jdbcType=OTHER}, #{birthday,jdbcType=OTHER}, #{address,jdbcType=OTHER}, 
+      #{mobilePhone,jdbcType=OTHER}, #{telPhone,jdbcType=OTHER}, #{email,jdbcType=OTHER}, 
+      #{sex,jdbcType=OTHER}, #{type,jdbcType=OTHER}, #{status,jdbcType=OTHER}, #{description,jdbcType=OTHER}, 
+      #{crtTime,jdbcType=DATE}, #{crtUser,jdbcType=OTHER}, #{crtName,jdbcType=OTHER}, 
+      #{crtHost,jdbcType=OTHER}, #{updTime,jdbcType=DATE}, #{updUser,jdbcType=OTHER}, 
+      #{updName,jdbcType=OTHER}, #{updHost,jdbcType=OTHER}, #{attr1,jdbcType=OTHER}, 
+      #{attr2,jdbcType=OTHER}, #{attr3,jdbcType=OTHER}, #{attr4,jdbcType=OTHER}, #{attr5,jdbcType=OTHER}, 
+      #{attr6,jdbcType=OTHER}, #{attr7,jdbcType=OTHER}, #{attr8,jdbcType=OTHER})
+  </insert>
+  <insert id="insertSelective" parameterType="serviceManager.vo.BaseUser" >
+    <selectKey resultType="java.lang.Long" keyProperty="id" order="BEFORE" >
+      oracle
+    </selectKey>
+    insert into BASE_USER
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      ID,
+      <if test="username != null" >
+        USERNAME,
+      </if>
+      <if test="password != null" >
+        PASSWORD,
+      </if>
+      <if test="name != null" >
+        NAME,
+      </if>
+      <if test="birthday != null" >
+        BIRTHDAY,
+      </if>
+      <if test="address != null" >
+        ADDRESS,
+      </if>
+      <if test="mobilePhone != null" >
+        MOBILE_PHONE,
+      </if>
+      <if test="telPhone != null" >
+        TEL_PHONE,
+      </if>
+      <if test="email != null" >
+        EMAIL,
+      </if>
+      <if test="sex != null" >
+        SEX,
+      </if>
+      <if test="type != null" >
+        TYPE,
+      </if>
+      <if test="status != null" >
+        STATUS,
+      </if>
+      <if test="description != null" >
+        DESCRIPTION,
+      </if>
+      <if test="crtTime != null" >
+        CRT_TIME,
+      </if>
+      <if test="crtUser != null" >
+        CRT_USER,
+      </if>
+      <if test="crtName != null" >
+        CRT_NAME,
+      </if>
+      <if test="crtHost != null" >
+        CRT_HOST,
+      </if>
+      <if test="updTime != null" >
+        UPD_TIME,
+      </if>
+      <if test="updUser != null" >
+        UPD_USER,
+      </if>
+      <if test="updName != null" >
+        UPD_NAME,
+      </if>
+      <if test="updHost != null" >
+        UPD_HOST,
+      </if>
+      <if test="attr1 != null" >
+        ATTR1,
+      </if>
+      <if test="attr2 != null" >
+        ATTR2,
+      </if>
+      <if test="attr3 != null" >
+        ATTR3,
+      </if>
+      <if test="attr4 != null" >
+        ATTR4,
+      </if>
+      <if test="attr5 != null" >
+        ATTR5,
+      </if>
+      <if test="attr6 != null" >
+        ATTR6,
+      </if>
+      <if test="attr7 != null" >
+        ATTR7,
+      </if>
+      <if test="attr8 != null" >
+        ATTR8,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      #{id,jdbcType=DECIMAL},
+      <if test="username != null" >
+        #{username,jdbcType=OTHER},
+      </if>
+      <if test="password != null" >
+        #{password,jdbcType=OTHER},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=OTHER},
+      </if>
+      <if test="birthday != null" >
+        #{birthday,jdbcType=OTHER},
+      </if>
+      <if test="address != null" >
+        #{address,jdbcType=OTHER},
+      </if>
+      <if test="mobilePhone != null" >
+        #{mobilePhone,jdbcType=OTHER},
+      </if>
+      <if test="telPhone != null" >
+        #{telPhone,jdbcType=OTHER},
+      </if>
+      <if test="email != null" >
+        #{email,jdbcType=OTHER},
+      </if>
+      <if test="sex != null" >
+        #{sex,jdbcType=OTHER},
+      </if>
+      <if test="type != null" >
+        #{type,jdbcType=OTHER},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=OTHER},
+      </if>
+      <if test="description != null" >
+        #{description,jdbcType=OTHER},
+      </if>
+      <if test="crtTime != null" >
+        #{crtTime,jdbcType=DATE},
+      </if>
+      <if test="crtUser != null" >
+        #{crtUser,jdbcType=OTHER},
+      </if>
+      <if test="crtName != null" >
+        #{crtName,jdbcType=OTHER},
+      </if>
+      <if test="crtHost != null" >
+        #{crtHost,jdbcType=OTHER},
+      </if>
+      <if test="updTime != null" >
+        #{updTime,jdbcType=DATE},
+      </if>
+      <if test="updUser != null" >
+        #{updUser,jdbcType=OTHER},
+      </if>
+      <if test="updName != null" >
+        #{updName,jdbcType=OTHER},
+      </if>
+      <if test="updHost != null" >
+        #{updHost,jdbcType=OTHER},
+      </if>
+      <if test="attr1 != null" >
+        #{attr1,jdbcType=OTHER},
+      </if>
+      <if test="attr2 != null" >
+        #{attr2,jdbcType=OTHER},
+      </if>
+      <if test="attr3 != null" >
+        #{attr3,jdbcType=OTHER},
+      </if>
+      <if test="attr4 != null" >
+        #{attr4,jdbcType=OTHER},
+      </if>
+      <if test="attr5 != null" >
+        #{attr5,jdbcType=OTHER},
+      </if>
+      <if test="attr6 != null" >
+        #{attr6,jdbcType=OTHER},
+      </if>
+      <if test="attr7 != null" >
+        #{attr7,jdbcType=OTHER},
+      </if>
+      <if test="attr8 != null" >
+        #{attr8,jdbcType=OTHER},
+      </if>
+    </trim>
+  </insert>
+</mapper>

@@ -1,0 +1,86 @@
+logging:
+    level:
+        toongji: DEBUG
+spring:
+    application:
+        name: ace-service-manage
+    jackson:
+        date-format: yyyy-MM-dd HH:mm:ss
+        time-zone: GMT+8
+        default-property-inclusion: non-null
+    datasource:
+        name: test
+        driverClassName: oracle.jdbc.driver.OracleDriver
+        url: jdbc:oracle:thin:@202.120.164.106:1521/orcl
+        username: mdm
+        password: mdm
+        # 使用druid数据源
+        type: com.alibaba.druid.pool.DruidDataSource
+        
+    #rabbitmq:
+        #host: ${RABBIT_MQ_HOST:localhost}
+        #port:  ${RABBIT_MQ_PORT:5672}
+        #username: guest
+        #password: guest
+        
+    activemq:
+      broker-url: tcp://202.120.164.101:61616
+      in-memory: true
+      pool:
+        enabled: true
+    sleuth:
+      enabled: true
+      http:
+        legacy:
+          enabled: true
+    security:
+      user: 
+        name: admin
+        password: admin
+    redis:
+        database: 2
+        host: ${REDIS_HOST:202.120.164.101}
+        port: ${REDIS_PORT:6379}
+        jedis:
+          pool:
+            max-active: 20
+
+mybatis:
+    mapper-locations: "classpath*:serviceManager/mapper/*.xml"
+
+server:
+    port: 8051
+eureka:
+    instance:
+        statusPageUrlPath: /actuator/info
+        healthCheckUrlPath: /actuator/health
+        # docker 部署开启
+        prefer-ip-address: true
+        ip-address: 127.0.0.1
+    client:
+        serviceUrl:
+#            defaultZone: http://localhost:8761/eureka/
+            defaultZone: http://${EUREKA_HOST:202.120.164.101}:${EUREKA_PORT:8761}/eureka/
+
+# 配置swagger
+swagger:
+    enabled: true
+    base-package: com
+    title: ace-service-manage
+    version: 1.0.API
+    description: API文档
+
+auth:
+  serviceId: ace-service-manage
+  user:
+    token-header: Authorization
+  client:
+    id: ace-service-manage
+    secret: 123456
+    token-header: x-client-token
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'

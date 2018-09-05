@@ -37,6 +37,7 @@
         <module>ace-control</module>
         <module>ace-modules</module>
         <module>mdmAPI</module>
+        <module>ace-service-manage</module>
     </modules>
     <packaging>pom</packaging>
     <developers>

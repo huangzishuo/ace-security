@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="serviceManager.dao.ServiceApiMapper" >
+  <resultMap id="BaseResultMap" type="serviceManager.vo.ServiceApi" >
+    <constructor >
+      <arg column="ID" jdbcType="DECIMAL" javaType="java.lang.Long" />
+      <arg column="API_URL" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="API_NAME" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="API_NAME_CN" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="API_DESC" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="SERVICE_ID" jdbcType="DECIMAL" javaType="java.lang.Long" />
+      <arg column="VALIDATY" jdbcType="VARCHAR" javaType="java.lang.String" />
+    </constructor>
+  </resultMap>
+  <insert id="insert" parameterType="serviceManager.vo.ServiceApi" >
+    <selectKey resultType="java.lang.Long" keyProperty="id" order="BEFORE" >
+      oracle
+    </selectKey>
+    insert into SERVICE_API (ID, API_URL, API_NAME, 
+      API_NAME_CN, API_DESC, SERVICE_ID, 
+      VALIDATY)
+    values (#{id,jdbcType=DECIMAL}, #{apiUrl,jdbcType=VARCHAR}, #{apiName,jdbcType=VARCHAR}, 
+      #{apiNameCn,jdbcType=VARCHAR}, #{apiDesc,jdbcType=VARCHAR}, #{serviceId,jdbcType=DECIMAL}, 
+      #{validaty,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="serviceManager.vo.ServiceApi" >
+    <selectKey resultType="java.lang.Long" keyProperty="id" order="BEFORE" >
+      oracle
+    </selectKey>
+    insert into SERVICE_API
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      ID,
+      <if test="apiUrl != null" >
+        API_URL,
+      </if>
+      <if test="apiName != null" >
+        API_NAME,
+      </if>
+      <if test="apiNameCn != null" >
+        API_NAME_CN,
+      </if>
+      <if test="apiDesc != null" >
+        API_DESC,
+      </if>
+      <if test="serviceId != null" >
+        SERVICE_ID,
+      </if>
+      <if test="validaty != null" >
+        VALIDATY,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      #{id,jdbcType=DECIMAL},
+      <if test="apiUrl != null" >
+        #{apiUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="apiName != null" >
+        #{apiName,jdbcType=VARCHAR},
+      </if>
+      <if test="apiNameCn != null" >
+        #{apiNameCn,jdbcType=VARCHAR},
+      </if>
+      <if test="apiDesc != null" >
+        #{apiDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="serviceId != null" >
+        #{serviceId,jdbcType=DECIMAL},
+      </if>
+      <if test="validaty != null" >
+        #{validaty,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+</mapper>

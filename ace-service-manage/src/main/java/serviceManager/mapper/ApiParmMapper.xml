@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="serviceManager.dao.ApiParmMapper">
+	<resultMap id="BaseResultMap"
+		type="serviceManager.vo.ApiParm">
+		<constructor>
+			<arg column="ID" jdbcType="DECIMAL" javaType="java.lang.Long" />
+			<arg column="SERVICE_API_ID" jdbcType="DECIMAL"
+				javaType="java.lang.Long" />
+			<arg column="PARM_TYPE" jdbcType="VARCHAR"
+				javaType="java.lang.String" />
+			<arg column="OBJECT_NODE" jdbcType="VARCHAR"
+				javaType="java.lang.String" />
+			<arg column="PARM_NAME" jdbcType="VARCHAR"
+				javaType="java.lang.String" />
+			<arg column="PARM_NAME_CN" jdbcType="VARCHAR"
+				javaType="java.lang.String" />
+			<arg column="VALIDATY" jdbcType="VARCHAR"
+				javaType="java.lang.String" />
+			<arg column="P_ID" jdbcType="DECIMAL" javaType="java.lang.Long" />
+		</constructor>
+	</resultMap>
+	<!-- 入参出参查询 -->
+	<select id="queryParmRespons" resultType="serviceManager.vo.ServiceApiParmVo" parameterType="java.lang.Integer">
+		select t1.id,t1.api_Url,t1.api_Name,t1.api_Name_Cn,t1.api_Desc,t1.service_Id,
+		t2.id as api_parm_id,t2.service_api_id,
+		t2.parm_type,t2.object_node,t2.parm_name,t2.parm_name_cn,t2.p_id
+		from service_api t1 left join API_PARM t2 on t1.id = t2.service_api_id  where t2.parm_type=#{paramType} and t2.validaty=1
+	</select>
+
+	<insert id="insert" parameterType="serviceManager.vo.ApiParm">
+		<selectKey resultType="java.lang.Long" keyProperty="id"
+			order="BEFORE">
+			oracle
+		</selectKey>
+		insert into API_PARM (ID, SERVICE_API_ID, PARM_TYPE,
+		OBJECT_NODE,
+		PARM_NAME, PARM_NAME_CN,
+		VALIDATY, P_ID)
+		values (#{id,jdbcType=DECIMAL},
+		#{serviceApiId,jdbcType=DECIMAL},
+		#{parmType,jdbcType=VARCHAR},
+		#{objectNode,jdbcType=VARCHAR}, #{parmName,jdbcType=VARCHAR},
+		#{parmNameCn,jdbcType=VARCHAR},
+		#{validaty,jdbcType=VARCHAR},
+		#{pId,jdbcType=DECIMAL})
+	</insert>
+	<insert id="insertSelective"
+		parameterType="serviceManager.vo.ApiParm">
+		<selectKey resultType="java.lang.Long" keyProperty="id"
+			order="BEFORE">
+			oracle
+		</selectKey>
+		insert into API_PARM
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			ID,
+			<if test="serviceApiId != null">
+				SERVICE_API_ID,
+			</if>
+			<if test="parmType != null">
+				PARM_TYPE,
+			</if>
+			<if test="objectNode != null">
+				OBJECT_NODE,
+			</if>
+			<if test="parmName != null">
+				PARM_NAME,
+			</if>
+			<if test="parmNameCn != null">
+				PARM_NAME_CN,
+			</if>
+			<if test="validaty != null">
+				VALIDATY,
+			</if>
+			<if test="pId != null">
+				P_ID,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{id,jdbcType=DECIMAL},
+			<if test="serviceApiId != null">
+				#{serviceApiId,jdbcType=DECIMAL},
+			</if>
+			<if test="parmType != null">
+				#{parmType,jdbcType=VARCHAR},
+			</if>
+			<if test="objectNode != null">
+				#{objectNode,jdbcType=VARCHAR},
+			</if>
+			<if test="parmName != null">
+				#{parmName,jdbcType=VARCHAR},
+			</if>
+			<if test="parmNameCn != null">
+				#{parmNameCn,jdbcType=VARCHAR},
+			</if>
+			<if test="validaty != null">
+				#{validaty,jdbcType=VARCHAR},
+			</if>
+			<if test="pId != null">
+				#{pId,jdbcType=DECIMAL},
+			</if>
+		</trim>
+	</insert>
+</mapper>

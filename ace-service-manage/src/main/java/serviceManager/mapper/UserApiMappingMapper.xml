@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="serviceManager.dao.UserApiMappingMapper" >
+  <resultMap id="BaseResultMap" type="serviceManager.vo.UserApiMapping" >
+      <result column="ID" jdbcType="DECIMAL" javaType="java.lang.Long" />
+      <result column="USER_ID" jdbcType="DECIMAL" javaType="java.lang.Long" />
+      <result column="SERVICE_API_ID" jdbcType="DECIMAL" javaType="java.lang.Long" />
+  </resultMap>
+<!--   <resultMap id="ServiceMap" type="serviceManager.vo.ServiceManagerVo" >
+	      <result property="apiName" column="API_NAME" jdbcType="VARCHAR" javaType="java.lang.String" />
+	      <result property="apiNameCn" column="API_NAME_CN" jdbcType="VARCHAR" javaType="java.lang.String" />
+     	  <result property="userName" column="USERNAME" jdbcType="VARCHAR" javaType="java.lang.String" />
+     	  <result property="id" column="ID" jdbcType="DECIMAL" javaType="java.lang.Long" />
+  </resultMap> -->
+  
+  <select id="queryAllService" resultType="serviceManager.vo.ServiceManagerVo" parameterType="java.lang.String">
+  	select t2.id api_id,t3.id,t3.username,t2.api_name,t2.api_name_cn from user_api_mapping t1  
+	left join service_api t2 on t1.service_api_id = t2.id 
+	left join base_user t3 on t1.user_id = t3.id 
+	where t3.username = #{userName}  and t2.validaty = '1' 
+  </select>
+  <select id="queryAll" resultMap="BaseResultMap">
+  	select * from USER_API_MAPPING
+  </select>
+  <insert id="insert" parameterType="serviceManager.vo.UserApiMapping" >
+    <selectKey resultType="java.lang.Long" keyProperty="id" order="BEFORE" >
+      oracle
+    </selectKey>
+    insert into USER_API_MAPPING (ID, USER_ID, SERVICE_API_ID
+      )
+    values (#{id,jdbcType=DECIMAL}, #{userId,jdbcType=DECIMAL}, #{serviceApiId,jdbcType=DECIMAL}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="serviceManager.vo.UserApiMapping" >
+    <selectKey resultType="java.lang.Long" keyProperty="id" order="BEFORE" >
+      oracle
+    </selectKey>
+    insert into USER_API_MAPPING
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      ID,
+      <if test="userId != null" >
+        USER_ID,
+      </if>
+      <if test="serviceApiId != null" >
+        SERVICE_API_ID,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      #{id,jdbcType=DECIMAL},
+      <if test="userId != null" >
+        #{userId,jdbcType=DECIMAL},
+      </if>
+      <if test="serviceApiId != null" >
+        #{serviceApiId,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+</mapper>
