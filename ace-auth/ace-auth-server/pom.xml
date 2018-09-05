@@ -10,6 +10,10 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<artifactId>ace-auth-server</artifactId>
+	
+	<properties>
+		<docker.image.prefix>ace-auth-server</docker.image.prefix>
+	</properties>
 
 	<dependencies>
 		<dependency>
@@ -170,6 +174,23 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 				<configuration>
 					<skipTests>true</skipTests>
+				</configuration>
+			</plugin>
+			<!-- Docker maven plugin -->
+			<plugin>
+				<groupId>tongji</groupId>
+				<artifactId>docker-maven-plugin</artifactId>
+				<version>1.0.0</version>
+				<configuration>
+					<imageName>${docker.image.prefix}/${project.artifactId}</imageName>
+					<dockerDirectory>src/main/docker</dockerDirectory>
+					<resources>
+						<resource>
+							<targetPath>/</targetPath>
+							<directory>${project.build.directory}</directory>
+							<include>${project.build.finalName}.jar</include>
+						</resource>
+					</resources>
 				</configuration>
 			</plugin>
 			<!-- <plugin> <groupId>org.springframework.boot</groupId> <artifactId>spring-boot-maven-plugin</artifactId> 
